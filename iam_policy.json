@@ -1,0 +1,41 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": [
+                "arn:aws:logs:ap-southeast-1:xxxxxxxxxxxx:log-group:/aws/lambda/check-iam-access-keys-age:*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:ap-southeast-1:xxxxxxxxxxxx:log-group:/aws/lambda/check-iam-access-keys-age:*:*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "iam:Get*",
+                "iam:List*",
+            ],
+            "Resource": "*",
+            "Effect": "Allow",
+            "Sid": "IAMReadOnly"
+        },
+        {
+            "Action": [
+                "ses:SendEmail"
+            ],
+            "Resource": "arn:aws:ses:us-east-1:xxxxxxxxxxxx:identity/badgecrypto@gmail.com",
+            "Effect": "Allow",
+            "Sid": "SESSendEmail"
+        }
+    ]
+}

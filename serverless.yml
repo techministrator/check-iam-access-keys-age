@@ -1,0 +1,40 @@
+service: check-iam-access-keys-age
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ap-southeast-1
+  stage: dev
+
+  environment:
+    LAMBDA_FUNCTION_NAME: ${self:service}
+    SES_EMAIL: no_reply@gmail.com   # Replace with your verified SES email
+    SES_REGION: us-east-1
+    IAM_EMAIL_TAG_KEY: email
+  
+  iamRoleStatements:
+    - Sid: IAMReadOnly
+      Effect: Allow
+      Action: 
+        - iam:Get*
+        - iam:List*
+      Resource: "*"
+    - Sid: SESSendEmail
+      Effect: Allow
+      Action: 
+        - ses:SendEmail
+      Resource: '*'
+
+functions:
+  funcIAMAccessKeysCheck:
+    handler: handler.lambda_handler
+    name: ${self:provider.environment.LAMBDA_FUNCTION_NAME}
+    description: 'Check IAM User Access Keys that live over 30 days then send email to the user'
+    memorySize: 128
+    timeout: 30
+    events: 
+      - eventBridge:
+          schedule: cron(00 00 */1 * ? *)
+
+
+
